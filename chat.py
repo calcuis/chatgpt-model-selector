@@ -21,8 +21,6 @@ if gguf_files:
 
         root = Tk()
         root.title("chatGPT")
-        icon = PhotoImage(file = "logo.png")
-        root.iconphoto(False, icon)
 
         from llama_cpp import Llama
         llm = Llama(model_path=ModelPath)
