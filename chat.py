@@ -14,20 +14,18 @@ if gguf_files:
         selected_file=gguf_files[choice_index]
         print(f"Model file: {selected_file} is selected!")
         ModelPath=selected_file
+        
+        from connector_py import Llama
+        llm = Llama(model_path=ModelPath)
 
         from tkinter import *
         import tkinter.scrolledtext as st
 
         root = Tk()
         root.title("chatGPT")
-
-        from connector_py import Llama
-        llm = Llama(model_path=ModelPath)
-
         root.columnconfigure([0, 1, 2], minsize=150)
         root.rowconfigure(0, weight=2)
         root.rowconfigure(1, weight=1)
-
         i = Entry()
         o = st.ScrolledText()
 
