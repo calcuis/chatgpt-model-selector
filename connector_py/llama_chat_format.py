@@ -52,9 +52,7 @@ class LlamaChatCompletionHandler(Protocol):
     ]:
         ...
 
-
 CHAT_HANDLERS: Dict[str, LlamaChatCompletionHandler] = {}
-
 
 def get_chat_completion_handler(name: str) -> LlamaChatCompletionHandler:
     return CHAT_HANDLERS[name]
@@ -67,7 +65,6 @@ def register_chat_completion_handler(name: str):
 
     return decorator
 
-
 def _get_system_message(
     messages: List[llama_types.ChatCompletionRequestMessage],
 ) -> str:
@@ -76,7 +73,6 @@ def _get_system_message(
         if message["role"] == "system":
             return message["content"] or ""
     return ""
-
 
 def _map_roles(
     messages: List[llama_types.ChatCompletionRequestMessage], role_map: Dict[str, str]
@@ -88,7 +84,6 @@ def _map_roles(
         if role in role_map:
             output.append((role_map[role], message["content"]))
     return output
-
 
 def _format_llama2(
     system_message: str, messages: List[Tuple[str, Optional[str]]], sep: str, sep2: str
@@ -105,7 +100,6 @@ def _format_llama2(
             ret += role + " "
     return ret
 
-
 def _format_add_colon_single(
     system_message: str, messages: List[Tuple[str, Optional[str]]], sep: str
 ) -> str:
@@ -117,7 +111,6 @@ def _format_add_colon_single(
         else:
             ret += role + ":"
     return ret
-
 
 def _format_add_colon_two(
     system_message: str, messages: List[Tuple[str, Optional[str]]], sep: str, sep2: str
@@ -132,7 +125,6 @@ def _format_add_colon_two(
             ret += role + ":"
     return ret
 
-
 def _format_no_colon_single(
     system_message: str, messages: List[Tuple[str, Optional[str]]], sep: str
 ) -> str:
@@ -144,7 +136,6 @@ def _format_no_colon_single(
         else:
             ret += role
     return ret
-
 
 def _format_add_colon_space_single(
     system_message: str, messages: List[Tuple[str, Optional[str]]], sep: str
@@ -158,7 +149,6 @@ def _format_add_colon_space_single(
             ret += role + ": "  # must be end with a space
     return ret
 
-
 def _format_chatml(
     system_message: str, messages: List[Tuple[str, Optional[str]]], sep: str
 ) -> str:
@@ -171,12 +161,10 @@ def _format_chatml(
             ret += role + "\n"
     return ret
 
-
 @dataclasses.dataclass
 class ChatFormatterResponse:
     prompt: str
     stop: Optional[Union[str, List[str]]] = None
-
 
 class ChatFormatter(Protocol):
     def __call__(
@@ -187,11 +175,9 @@ class ChatFormatter(Protocol):
     ) -> ChatFormatterResponse:
         ...
 
-
 class BasicChatHandler:
     def __init__(self, chat_format: str):
         self.chat_format = chat_format
-
 
 def _convert_text_completion_to_chat(
     completion: llama_types.Completion,
@@ -213,7 +199,6 @@ def _convert_text_completion_to_chat(
         ],
         "usage": completion["usage"],
     }
-
 
 def _convert_text_completion_chunks_to_chat(
     chunks: Iterator[llama_types.CreateCompletionStreamResponse],
@@ -253,7 +238,6 @@ def _convert_text_completion_chunks_to_chat(
             ],
         }
 
-
 def _convert_completion_to_chat(
     completion_or_chunks: Union[
         llama_types.CreateCompletionResponse,
@@ -270,9 +254,7 @@ def _convert_completion_to_chat(
         completion: llama_types.Completion = completion_or_chunks  # type: ignore
         return _convert_text_completion_to_chat(completion)
 
-
 _CHAT_FORMATS: Dict[str, ChatFormatter] = {}
-
 
 def register_chat_format(name: str):
     def decorator(f: ChatFormatter):
@@ -360,7 +342,6 @@ def register_chat_format(name: str):
 
     return decorator
 
-
 def get_chat_format(name: str):
     try:
         return _CHAT_FORMATS[name]
@@ -368,7 +349,6 @@ def get_chat_format(name: str):
         raise ValueError(
             f"Invalid chat format: {name} (valid formats: {list(_CHAT_FORMATS.keys())})"
         )
-
 
 def hf_autotokenizer_to_chat_formatter(
     pretrained_model_name_or_path: Union[str, os.PathLike[str]]
@@ -402,7 +382,6 @@ def format_llama2(
         system_message = _system_template.format(system_message=system_message)
     _prompt = _format_llama2(system_message, _messages, " ", "</s>") + "[/INST]"
     return ChatFormatterResponse(prompt=_prompt)
-
 
 @register_chat_format("alpaca")
 def format_alpaca(
@@ -448,7 +427,6 @@ def format(
     _prompt = _format_add_colon_two(system_message, _messages, _sep, _sep2)
     return ChatFormatterResponse(prompt=_prompt)
 
-
 @register_chat_format("oasst_llama")
 def format_oasst_llama(
     messages: List[llama_types.ChatCompletionRequestMessage],
@@ -463,7 +441,6 @@ def format_oasst_llama(
     _messages.append((_roles["assistant"], None))
     _prompt = _format_no_colon_single(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt)
-
 
 @register_chat_format("baichuan-2")
 def format_baichuan2(
@@ -480,7 +457,6 @@ def format_baichuan2(
     _prompt = _format_no_colon_single(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt)
 
-
 @register_chat_format("baichuan")
 def format_baichuan(
     messages: List[llama_types.ChatCompletionRequestMessage],
@@ -495,7 +471,6 @@ def format_baichuan(
     _messages.append((_roles["assistant"], None))
     _prompt = _format_no_colon_single(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt)
-
 
 @register_chat_format("openbuddy")
 def format_openbuddy(
@@ -537,7 +512,6 @@ def format_redpajama_incite(
     _prompt = _format_add_colon_single(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt, stop=_stop)
 
-
 @register_chat_format("snoozy")
 def format_snoozy(
     messages: List[llama_types.ChatCompletionRequestMessage],
@@ -559,7 +533,6 @@ def format_snoozy(
     _prompt = _format_add_colon_single(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt, stop=_stop)
 
-
 @register_chat_format("phind")
 def format_phind(
     messages: List[llama_types.ChatCompletionRequestMessage],
@@ -573,7 +546,6 @@ def format_phind(
     _prompt = _format_add_colon_single(_system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt)
 
-
 @register_chat_format("intel")
 def format_intel(
     messages: List[llama_types.ChatCompletionRequestMessage],
@@ -586,7 +558,6 @@ def format_intel(
     _messages.append((_roles["assistant"], None))
     _prompt = _format_add_colon_single(_system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt)
-
 
 @register_chat_format("open-orca")
 def format_open_orca(
@@ -613,7 +584,6 @@ def format_open_orca(
     _messages.append((roles[1], None))
     _prompt = _format_add_colon_space_single(system_message, _messages, sep)
     return ChatFormatterResponse(prompt=_prompt, stop=stop_str)
-
 
 @register_chat_format("mistrallite")
 def format_mistrallite(
@@ -646,7 +616,6 @@ def format_zephyr(
     _prompt = _format_chatml(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt, stop=_sep)
 
-
 @register_chat_format("pygmalion")
 def format_pygmalion(
     messages: List[llama_types.ChatCompletionRequestMessage],
@@ -661,7 +630,6 @@ def format_pygmalion(
     _messages.append((_roles["assistant"], None))
     _prompt = _format_chatml(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt, stop=_sep)
-
 
 @register_chat_format("chatml")
 def format_chatml(
@@ -679,7 +647,6 @@ def format_chatml(
     _prompt = _format_chatml(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt, stop=_sep)
 
-
 @register_chat_format("openchat")
 def format_openchat(
     messages: List[llama_types.ChatCompletionRequestMessage],
@@ -696,7 +663,6 @@ def format_openchat(
     _messages.append((_roles["assistant"], None))
     _prompt = _format_chatml(system_message, _messages, _sep)
     return ChatFormatterResponse(prompt=_prompt, stop=_sep)
-
 
 @register_chat_completion_handler("functionary")
 def functionary_chat_handler(
@@ -1049,7 +1015,6 @@ def functionary_chat_handler(
         ],
         usage=completion["usage"],
     )
-
 
 class Llava15ChatHandler:
     _clip_free = None
