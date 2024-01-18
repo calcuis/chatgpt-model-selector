@@ -1,5 +1,4 @@
 import os
-
 gguf_files = [file for file in os.listdir() if file.endswith('.gguf')]
 
 if gguf_files:
@@ -22,7 +21,7 @@ if gguf_files:
         root = Tk()
         root.title("chatGPT")
 
-        from llama_cpp import Llama
+        from connector_py import Llama
         llm = Llama(model_path=ModelPath)
 
         root.columnconfigure([0, 1, 2], minsize=150)
