@@ -60,7 +60,6 @@ class BaseLlamaCache(ABC):
     def __setitem__(self, key: Sequence[int], value: "LlamaState") -> None:
         raise NotImplementedError
 
-
 class LlamaRAMCache(BaseLlamaCache):
     """Cache for a llama.cpp model using RAM."""
 
@@ -108,10 +107,8 @@ class LlamaRAMCache(BaseLlamaCache):
         while self.cache_size > self.capacity_bytes and len(self.cache_state) > 0:
             self.cache_state.popitem(last=False)
 
-
 # Alias for backwards compatibility
 LlamaCache = LlamaRAMCache
-
 
 class LlamaDiskCache(BaseLlamaCache):
     """Cache for a llama.cpp model using disk."""
@@ -166,7 +163,6 @@ class LlamaDiskCache(BaseLlamaCache):
             del self.cache[key_to_remove]
         print("LlamaDiskCache.__setitem__: trim", file=sys.stderr)
 
-
 class LlamaState:
     def __init__(
         self,
@@ -196,9 +192,7 @@ class LogitsProcessorList(List[LogitsProcessor]):
             scores = processor(input_ids, scores)
         return scores
 
-
 StoppingCriteria = Callable[[npt.NDArray[np.intc], npt.NDArray[np.single]], bool]
-
 
 class StoppingCriteriaList(List[StoppingCriteria]):
     def __call__(
@@ -392,7 +386,6 @@ class _LlamaModel:
     def default_params():
         """Get the default llama_model_params."""
         return llama_cpp.llama_model_default_params()
-
 
 class _LlamaContext:
     """Intermediate Python wrapper for a llama.cpp llama_context.
@@ -650,7 +643,6 @@ class _LlamaContext:
         """Get the default llama_context_params."""
         return llama_cpp.llama_context_default_params()
 
-
 class _LlamaBatch:
     _llama_batch_free = None
     # NOTE: this must be "saved" here to avoid exceptions when calling __del__
@@ -717,7 +709,6 @@ class _LlamaTokenDataArray:
         )
         self.candidates.sorted = llama_cpp.c_bool(False)
         self.candidates.size = llama_cpp.c_size_t(self.n_vocab)
-
 
 class Llama:
     """High-level Python wrapper for a llama.cpp model."""
@@ -2316,7 +2307,6 @@ class Llama:
             else:
                 break
         return longest_prefix
-
 
 class LlamaTokenizer:
     def __init__(self, llama: Llama):
