@@ -35,10 +35,8 @@ U = TypeVar("U")
 V = TypeVar("V")
 W = TypeVar("W")
 
-
 class Sentinel:
     """Used to mark the end of a iterator of std::vector & std::map."""
-
 
 class LlamaGrammar:
     """Keeps reference counts of all the arguments, so that they are not
@@ -136,12 +134,10 @@ class LlamaGrammar:
             llama_cpp.llama_grammar_free(self.grammar)
         self.init()
 
-
 class LlamaGrammarElement:
     def __init__(self, type: "llama_gretype", value: int):
         self.type = type
         self.value = value  # Unicode code point or rule ID
-
 
 class const_char_p:
     """C++ implementation of const char *."""
@@ -206,7 +202,6 @@ class const_char_p:
     def __gt__(self: Ptr, other: Ptr) -> bool:
         assert self.value == other.value, "comparing pointers from different strings"
         return self.pos > other.pos
-
 
 class std:
     @staticmethod
@@ -413,7 +408,6 @@ class std:
         def end(self) -> "std.map[T, U].iterator[T, U]":
             return self.iterator(self, Sentinel())
 
-
 # // grammar element type
 # enum llama_gretype {
 #     // end of rule definition
@@ -435,7 +429,6 @@ class std:
 #     // be an inclusive range ([a-z])
 #     LLAMA_GRETYPE_CHAR_RNG_UPPER = 5,
 
-
 #     // modifies a preceding LLAMA_GRETYPE_CHAR or
 #     // LLAMA_GRETYPE_CHAR_RNG_UPPER to add an alternate char to match ([ab], [a-zA])
 #     LLAMA_GRETYPE_CHAR_ALT       = 6,
@@ -450,7 +443,6 @@ class llama_gretype(Enum):
     LLAMA_GRETYPE_CHAR_NOT = 4  # inverse char(s) ([^a], [^a-b] [^abc])
     LLAMA_GRETYPE_CHAR_RNG_UPPER = 5  # modifies a preceding LLAMA_GRETYPE_CHAR or LLAMA_GRETYPE_CHAR_ALT to be an inclusive range ([a-z])
     LLAMA_GRETYPE_CHAR_ALT = 6  # modifies a preceding LLAMA_GRETYPE_CHAR or LLAMA_GRETYPE_CHAR_RNG_UPPER to add an alternate char to match ([ab], [a-zA])
-
 
 # struct parse_state {
 #     std::map<std::string, uint32_t>                 symbol_ids;
@@ -480,7 +472,6 @@ class parse_state:
             f"parse_state(symbol_ids={len(self.symbol_ids)}, rules={len(self.rules)})"
         )
 
-
 # struct llama_grammar {
 #     const std::vector<std::vector<llama_grammar_element>>   rules;
 #     std::vector<std::vector<const llama_grammar_element *>> stacks;
@@ -494,7 +485,6 @@ class parse_state:
 #         self.rules = rules
 #         self.stacks = stacks
 
-
 # uint32_t get_symbol_id(parse_state & state, const char * src, size_t len) {
 #     uint32_t next_id = static_cast<uint32_t>(state.symbol_ids.size());
 #     auto result = state.symbol_ids.insert(std::make_pair(std::string(src, len), next_id));
@@ -505,7 +495,6 @@ def get_symbol_id(state: parse_state, src: const_char_p, len: int) -> int:
     result = state.symbol_ids.insert(std.string(src, len), next_id)
     return result[0].second  # type: ignore
 
-
 # uint32_t generate_symbol_id(parse_state & state, const std::string & base_name) {
 #     uint32_t next_id = static_cast<uint32_t>(state.symbol_ids.size());
 #     state.symbol_ids[base_name + '_' + std::to_string(next_id)] = next_id;
@@ -515,7 +504,6 @@ def generate_symbol_id(state: parse_state, base_name: str) -> int:
     next_id = state.symbol_ids.size()  # type: int
     state.symbol_ids[base_name + "_" + str(next_id)] = next_id
     return next_id
-
 
 # void add_rule(
 #         parse_state & state,
@@ -537,7 +525,6 @@ def add_rule(
             fill_value_factory=std.vector[LlamaGrammarElement],
         )
     state.rules[rule_id] = rule
-
 
 # std::pair<uint32_t, const char *> decode_utf8(const char * src) {
 #     static const int lookup[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4 };
@@ -568,13 +555,11 @@ def decode_utf8(src: const_char_p) -> Tuple[int, const_char_p]:
         pos += 1
     return value, pos
 
-
 # bool is_word_char(char c) {
 #     return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '-' || ('0' <= c && c <= '9');
 # }
 def is_word_char(c: str) -> bool:
     return ("a" <= c <= "z") or ("A" <= c <= "Z") or c == "-" or ("0" <= c <= "9")
-
 
 # std::pair<uint32_t, const char *> parse_hex(const char * src, int size) {
 #     const char * pos   = src;
@@ -617,7 +602,6 @@ def parse_hex(src: const_char_p, size: int) -> Tuple[int, const_char_p]:
     if pos != end:
         raise RuntimeError("expecting " + str(size) + " hex chars at " + str(src))
     return (value, pos)
-
 
 # std::pair<uint32_t, const char *> parse_char(const char * src) {
 #     if (*src == '\\') {
@@ -665,7 +649,6 @@ def parse_char(src: const_char_p) -> Tuple[int, const_char_p]:
     else:
         raise RuntimeError("unexpected end of input")
 
-
 # const char * parse_name(const char * src) {
 #     const char * pos = src;
 #     while (is_word_char(*pos)) {
@@ -683,7 +666,6 @@ def parse_name(src: const_char_p) -> const_char_p:
     if pos == src:
         raise RuntimeError("expecting name at " + str(src))
     return pos
-
 
 # const char * parse_space(const char * src, bool newline_ok) {
 #     const char * pos = src;
@@ -708,7 +690,6 @@ def parse_space(src: const_char_p, newline_ok: bool) -> const_char_p:
         else:
             pos += 1
     return pos
-
 
 # const char * parse_sequence(
 #         parse_state                        & state,
@@ -910,7 +891,6 @@ def parse_sequence(
     # }
     return pos
 
-
 # const char * parse_alternates(
 #         parse_state       & state,
 #         const char        * src,
@@ -945,7 +925,6 @@ def parse_alternates(
     add_rule(state, rule_id, rule)
     return pos
 
-
 # const char * parse_rule(parse_state & state, const char * src) {
 #     const char * name_end = parse_name(src);
 #     const char * pos      = parse_space(name_end, false);
@@ -959,7 +938,6 @@ def parse_alternates(
 #     pos = parse_space(pos + 3, true);
 
 #     pos = parse_alternates(state, pos, name, rule_id, false);
-
 
 #     if (*pos == '\r') {
 #         pos += pos[1] == '\n' ? 2 : 1;
@@ -991,7 +969,6 @@ def parse_rule(state: parse_state, src: const_char_p) -> const_char_p:
         raise RuntimeError("expecting newline or end at " + str(pos))
     return parse_space(pos, True)
 
-
 # parse_state parse(const char * src) {
 #     try {
 #         parse_state state;
@@ -1016,7 +993,6 @@ def parse(src: const_char_p) -> parse_state:
         print(f"{parse.__name__}: error parsing grammar: {err}")
         return parse_state()
 
-
 # void print_grammar_char(FILE * file, uint32_t c) {
 #     if (0x20 <= c && c <= 0x7f) {
 #         fprintf(file, "%c", static_cast<char>(c));
@@ -1031,7 +1007,6 @@ def print_grammar_char(file: TextIO, c: int) -> None:
     else:
         # cop out of encoding UTF-8
         file.write(f"<U+{c:04X}>")
-
 
 # bool is_char_element(llama_grammar_element elem) {
 #     switch (elem.type) {
@@ -1049,7 +1024,6 @@ def is_char_element(elem: LlamaGrammarElement) -> bool:
         llama_gretype.LLAMA_GRETYPE_CHAR_ALT,
         llama_gretype.LLAMA_GRETYPE_CHAR_RNG_UPPER,
     )
-
 
 # void print_rule(
 #         FILE     * file,
@@ -1166,7 +1140,6 @@ def print_rule(
     # }
     print(file=file)
 
-
 # void print_grammar(FILE * file, const parse_state & state) {
 #     try {
 #         std::map<uint32_t, std::string> symbol_id_names;
@@ -1196,7 +1169,6 @@ def print_grammar(file: TextIO, state: parse_state) -> None:
             f"{print_grammar.__name__}: error printing grammar: {err}",
             file=sys.stderr,
         )
-
 
 """llama.cpp gbnf rules from vendor/llama.cpp/grammars"""
 
