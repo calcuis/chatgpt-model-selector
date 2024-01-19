@@ -30,7 +30,6 @@ import numpy.typing as npt
 
 from ._utils import suppress_stdout_stderr
 
-
 class BaseLlamaCache(ABC):
     """Base cache class for a llama.cpp model."""
 
@@ -178,11 +177,9 @@ class LlamaState:
         self.llama_state = llama_state
         self.llama_state_size = llama_state_size
 
-
 LogitsProcessor = Callable[
     [npt.NDArray[np.intc], npt.NDArray[np.single]], npt.NDArray[np.single]
 ]
-
 
 class LogitsProcessorList(List[LogitsProcessor]):
     def __call__(
@@ -199,7 +196,6 @@ class StoppingCriteriaList(List[StoppingCriteria]):
         self, input_ids: npt.NDArray[np.intc], logits: npt.NDArray[np.single]
     ) -> bool:
         return any([stopping_criteria(input_ids, logits) for stopping_criteria in self])
-
 
 class _LlamaModel:
     """Intermediate Python wrapper for a llama.cpp llama_model.
@@ -680,7 +676,6 @@ class _LlamaBatch:
             self.batch.n_seq_id[i] = 1
             self.batch.logits[i] = logits_all
         self.batch.logits[n_tokens - 1] = True
-
 
 class _LlamaTokenDataArray:
     def __init__(self, *, n_vocab: int):
