@@ -1319,7 +1319,6 @@ number ::= ("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? ws
 ws ::= ([ \t\n] ws)?
 """
 
-
 JSON_GBNF = r"""
 root   ::= object
 value  ::= object | array | string | number | ("true" | "false" | "null") ws
@@ -1479,7 +1478,6 @@ class SchemaConverter:
 
     def format_grammar(self):
         return "\n".join((f"{name} ::= {rule}" for name, rule in self._rules.items()))
-
 
 def json_schema_to_gbnf(schema: str, prop_order: Optional[List[str]] = None):
     prop_order = prop_order or []
