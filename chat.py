@@ -48,3 +48,4 @@ if gguf_files:
         print("Invalid choice. Please enter a valid number.")
 else:
     print("No GGUF files are available in the current directory.")
+    input("--- Press ENTER To Exit ---")
