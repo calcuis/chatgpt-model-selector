@@ -1,4 +1,5 @@
 import os
+
 gguf_files = [file for file in os.listdir() if file.endswith('.gguf')]
 
 if gguf_files:
@@ -14,8 +15,8 @@ if gguf_files:
         selected_file=gguf_files[choice_index]
         print(f"Model file: {selected_file} is selected!")
         ModelPath=selected_file
-        
-        from connector_py import Llama
+
+        from connector import Llama
         llm = Llama(model_path=ModelPath)
 
         from tkinter import *
@@ -26,6 +27,11 @@ if gguf_files:
         root.columnconfigure([0, 1, 2], minsize=150)
         root.rowconfigure(0, weight=2)
         root.rowconfigure(1, weight=1)
+        
+        if os.path.isfile("logo.png"):
+            icon = PhotoImage(file = "logo.png")
+            root.iconphoto(False, icon)
+
         i = Entry()
         o = st.ScrolledText()
 
