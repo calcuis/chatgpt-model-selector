@@ -181,7 +181,6 @@ LogitsProcessor = Callable[
     [npt.NDArray[np.intc], npt.NDArray[np.single]], npt.NDArray[np.single]
 ]
 
-
 class LogitsProcessorList(List[LogitsProcessor]):
     def __call__(
         self, input_ids: npt.NDArray[np.intc], scores: npt.NDArray[np.single]
@@ -191,7 +190,6 @@ class LogitsProcessorList(List[LogitsProcessor]):
         return scores
 
 StoppingCriteria = Callable[[npt.NDArray[np.intc], npt.NDArray[np.single]], bool]
-
 
 class StoppingCriteriaList(List[StoppingCriteria]):
     def __call__(
@@ -384,7 +382,6 @@ class _LlamaModel:
     def default_params():
         """Get the default llama_model_params."""
         return llama_cpp.llama_model_default_params()
-
 
 class _LlamaContext:
     """Intermediate Python wrapper for a llama.cpp llama_context.
