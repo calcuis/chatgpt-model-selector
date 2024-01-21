@@ -1,17 +1,6 @@
-"""Types and request signatures for OpenAI compatibility
-
-NOTE: These types may change to match the OpenAI OpenAPI specification.
-
-Based on the OpenAI OpenAPI specification:
-https://github.com/openai/openai-openapi/blob/master/openapi.yaml
-
-"""
 from typing import Any, List, Optional, Dict, Union
 from typing_extensions import TypedDict, NotRequired, Literal
 
-# NOTE: Defining this correctly using annotations seems to break pydantic validation.
-#       This is a workaround until we can figure out how to do this correctly
-# JsonType = Union[None, int, str, bool, List["JsonType"], Dict[str, "JsonType"]]
 JsonType = Union[None, int, str, bool, List[Any], Dict[str, Any]]
 
 class EmbeddingUsage(TypedDict):
@@ -227,9 +216,6 @@ class ChatCompletionNamedToolChoice(TypedDict):
 ChatCompletionToolChoiceOption = Union[
     Literal["none", "auto"], ChatCompletionNamedToolChoice
 ]
-
-# NOTE: The following type names are not part of the OpenAI OpenAPI specification
-# and will be removed in a future major release.
 
 EmbeddingData = Embedding
 CompletionChunk = CreateCompletionResponse
