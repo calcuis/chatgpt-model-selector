@@ -19,12 +19,10 @@ from collections import deque, OrderedDict
 
 import diskcache
 import ctypes
-
 from .llama_types import *
 from .llama_grammar import LlamaGrammar
 import llama_cpp.llama_cpp as llama_cpp
 import llama_cpp.llama_chat_format as llama_chat_format
-
 import numpy as np
 import numpy.typing as npt
 
@@ -639,7 +637,6 @@ class _LlamaContext:
         """Get the default llama_context_params."""
         return llama_cpp.llama_context_default_params()
 
-
 class _LlamaBatch:
     _llama_batch_free = None
     # NOTE: this must be "saved" here to avoid exceptions when calling __del__
@@ -678,7 +675,6 @@ class _LlamaBatch:
             self.batch.logits[i] = logits_all
         self.batch.logits[n_tokens - 1] = True
 
-
 class _LlamaTokenDataArray:
     def __init__(self, *, n_vocab: int):
         self.n_vocab = n_vocab
@@ -706,7 +702,6 @@ class _LlamaTokenDataArray:
         )
         self.candidates.sorted = llama_cpp.c_bool(False)
         self.candidates.size = llama_cpp.c_size_t(self.n_vocab)
-
 
 class Llama:
     """High-level Python wrapper for a llama.cpp model."""
