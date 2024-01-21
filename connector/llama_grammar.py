@@ -35,10 +35,8 @@ U = TypeVar("U")
 V = TypeVar("V")
 W = TypeVar("W")
 
-
 class Sentinel:
     """Used to mark the end of a iterator of std::vector & std::map."""
-
 
 class LlamaGrammar:
     """Keeps reference counts of all the arguments, so that they are not
@@ -142,7 +140,6 @@ class LlamaGrammarElement:
         self.type = type
         self.value = value  # Unicode code point or rule ID
 
-
 class const_char_p:
     """C++ implementation of const char *."""
 
@@ -206,7 +203,6 @@ class const_char_p:
     def __gt__(self: Ptr, other: Ptr) -> bool:
         assert self.value == other.value, "comparing pointers from different strings"
         return self.pos > other.pos
-
 
 class std:
     @staticmethod
@@ -413,7 +409,6 @@ class std:
         def end(self) -> "std.map[T, U].iterator[T, U]":
             return self.iterator(self, Sentinel())
 
-
 # // grammar element type
 # enum llama_gretype {
 #     // end of rule definition
@@ -451,7 +446,6 @@ class llama_gretype(Enum):
     LLAMA_GRETYPE_CHAR_RNG_UPPER = 5  # modifies a preceding LLAMA_GRETYPE_CHAR or LLAMA_GRETYPE_CHAR_ALT to be an inclusive range ([a-z])
     LLAMA_GRETYPE_CHAR_ALT = 6  # modifies a preceding LLAMA_GRETYPE_CHAR or LLAMA_GRETYPE_CHAR_RNG_UPPER to add an alternate char to match ([ab], [a-zA])
 
-
 # struct parse_state {
 #     std::map<std::string, uint32_t>                 symbol_ids;
 #     std::vector<std::vector<llama_grammar_element>> rules;
@@ -480,7 +474,6 @@ class parse_state:
             f"parse_state(symbol_ids={len(self.symbol_ids)}, rules={len(self.rules)})"
         )
 
-
 # struct llama_grammar {
 #     const std::vector<std::vector<llama_grammar_element>>   rules;
 #     std::vector<std::vector<const llama_grammar_element *>> stacks;
@@ -494,7 +487,6 @@ class parse_state:
 #         self.rules = rules
 #         self.stacks = stacks
 
-
 # uint32_t get_symbol_id(parse_state & state, const char * src, size_t len) {
 #     uint32_t next_id = static_cast<uint32_t>(state.symbol_ids.size());
 #     auto result = state.symbol_ids.insert(std::make_pair(std::string(src, len), next_id));
@@ -505,7 +497,6 @@ def get_symbol_id(state: parse_state, src: const_char_p, len: int) -> int:
     result = state.symbol_ids.insert(std.string(src, len), next_id)
     return result[0].second  # type: ignore
 
-
 # uint32_t generate_symbol_id(parse_state & state, const std::string & base_name) {
 #     uint32_t next_id = static_cast<uint32_t>(state.symbol_ids.size());
 #     state.symbol_ids[base_name + '_' + std::to_string(next_id)] = next_id;
@@ -515,7 +506,6 @@ def generate_symbol_id(state: parse_state, base_name: str) -> int:
     next_id = state.symbol_ids.size()  # type: int
     state.symbol_ids[base_name + "_" + str(next_id)] = next_id
     return next_id
-
 
 # void add_rule(
 #         parse_state & state,
@@ -537,7 +527,6 @@ def add_rule(
             fill_value_factory=std.vector[LlamaGrammarElement],
         )
     state.rules[rule_id] = rule
-
 
 # std::pair<uint32_t, const char *> decode_utf8(const char * src) {
 #     static const int lookup[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4 };
@@ -568,13 +557,11 @@ def decode_utf8(src: const_char_p) -> Tuple[int, const_char_p]:
         pos += 1
     return value, pos
 
-
 # bool is_word_char(char c) {
 #     return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '-' || ('0' <= c && c <= '9');
 # }
 def is_word_char(c: str) -> bool:
     return ("a" <= c <= "z") or ("A" <= c <= "Z") or c == "-" or ("0" <= c <= "9")
-
 
 # std::pair<uint32_t, const char *> parse_hex(const char * src, int size) {
 #     const char * pos   = src;
@@ -617,7 +604,6 @@ def parse_hex(src: const_char_p, size: int) -> Tuple[int, const_char_p]:
     if pos != end:
         raise RuntimeError("expecting " + str(size) + " hex chars at " + str(src))
     return (value, pos)
-
 
 # std::pair<uint32_t, const char *> parse_char(const char * src) {
 #     if (*src == '\\') {
@@ -684,7 +670,6 @@ def parse_name(src: const_char_p) -> const_char_p:
         raise RuntimeError("expecting name at " + str(src))
     return pos
 
-
 # const char * parse_space(const char * src, bool newline_ok) {
 #     const char * pos = src;
 #     while (*pos == ' ' || *pos == '\t' || *pos == '#' ||
@@ -708,7 +693,6 @@ def parse_space(src: const_char_p, newline_ok: bool) -> const_char_p:
         else:
             pos += 1
     return pos
-
 
 # const char * parse_sequence(
 #         parse_state                        & state,
@@ -1406,7 +1390,6 @@ INVALID_RULE_CHARS_RE = re.compile(r"[^a-zA-Z0-9-]+")
 GRAMMAR_LITERAL_ESCAPE_RE = re.compile(r'[\r\n"]')
 GRAMMAR_LITERAL_ESCAPES = {"\r": "\\r", "\n": "\\n", '"': '\\"'}
 
-
 class SchemaConverter:
     def __init__(self, prop_order):
         self._prop_order = prop_order
@@ -1507,7 +1490,6 @@ class SchemaConverter:
 
     def format_grammar(self):
         return "\n".join((f"{name} ::= {rule}" for name, rule in self._rules.items()))
-
 
 def json_schema_to_gbnf(schema: str, prop_order: Optional[List[str]] = None):
     prop_order = prop_order or []
