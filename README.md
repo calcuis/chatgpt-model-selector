@@ -4,6 +4,7 @@ with this version, you could pull any (pre-trained model) GGUF file(s) inside th
 
 [<img src="https://raw.githubusercontent.com/calcuis/chatgpt-model-selector/master/demo.png" width="350" height="280">](https://github.com/calcuis/chatgpt-model-selector/blob/main/demo.png)
 [<img src="https://raw.githubusercontent.com/calcuis/chatgpt-model-selector/master/demo.gif" width="350" height="280">](https://github.com/calcuis/chatgpt-model-selector/blob/main/demo.gif)
+[<img src="https://raw.githubusercontent.com/calcuis/chatgpt-model-selector/master/demo2.gif" width="350" height="280">](https://github.com/calcuis/chatgpt-model-selector/blob/main/demo2.gif)
 
 #### sample model(s) available to download (try out)
 For general purpose
