@@ -30,7 +30,6 @@ import numpy.typing as npt
 
 from ._utils import suppress_stdout_stderr
 
-
 class BaseLlamaCache(ABC):
     """Base cache class for a llama.cpp model."""
 
@@ -59,7 +58,6 @@ class BaseLlamaCache(ABC):
     @abstractmethod
     def __setitem__(self, key: Sequence[int], value: "LlamaState") -> None:
         raise NotImplementedError
-
 
 class LlamaRAMCache(BaseLlamaCache):
     """Cache for a llama.cpp model using RAM."""
@@ -108,10 +106,8 @@ class LlamaRAMCache(BaseLlamaCache):
         while self.cache_size > self.capacity_bytes and len(self.cache_state) > 0:
             self.cache_state.popitem(last=False)
 
-
 # Alias for backwards compatibility
 LlamaCache = LlamaRAMCache
-
 
 class LlamaDiskCache(BaseLlamaCache):
     """Cache for a llama.cpp model using disk."""
@@ -166,7 +162,6 @@ class LlamaDiskCache(BaseLlamaCache):
             del self.cache[key_to_remove]
         print("LlamaDiskCache.__setitem__: trim", file=sys.stderr)
 
-
 class LlamaState:
     def __init__(
         self,
@@ -182,7 +177,6 @@ class LlamaState:
         self.llama_state = llama_state
         self.llama_state_size = llama_state_size
 
-
 LogitsProcessor = Callable[
     [npt.NDArray[np.intc], npt.NDArray[np.single]], npt.NDArray[np.single]
 ]
@@ -196,7 +190,6 @@ class LogitsProcessorList(List[LogitsProcessor]):
             scores = processor(input_ids, scores)
         return scores
 
-
 StoppingCriteria = Callable[[npt.NDArray[np.intc], npt.NDArray[np.single]], bool]
 
 
@@ -205,7 +198,6 @@ class StoppingCriteriaList(List[StoppingCriteria]):
         self, input_ids: npt.NDArray[np.intc], logits: npt.NDArray[np.single]
     ) -> bool:
         return any([stopping_criteria(input_ids, logits) for stopping_criteria in self])
-
 
 class _LlamaModel:
     """Intermediate Python wrapper for a llama.cpp llama_model.
@@ -2316,7 +2308,6 @@ class Llama:
             else:
                 break
         return longest_prefix
-
 
 class LlamaTokenizer:
     def __init__(self, llama: Llama):
