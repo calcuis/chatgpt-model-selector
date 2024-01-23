@@ -5,7 +5,7 @@ with this version, you could pull any (pre-trained model) GGUF file(s) inside th
 [<img src="https://raw.githubusercontent.com/calcuis/chatgpt-model-selector/master/demo.gif" width="350" height="280">](https://github.com/calcuis/chatgpt-model-selector/blob/main/demo.gif)
 [<img src="https://raw.githubusercontent.com/calcuis/chatgpt-model-selector/master/demo1.gif" width="350" height="280">](https://github.com/calcuis/chatgpt-model-selector/blob/main/demo1.gif)
 
-#### import as a package
+#### import as a package via pip/pip3
 ```
 pip install gguf-connector
 ```
