@@ -9,7 +9,7 @@ with this version, you could pull any (pre-trained model) GGUF file(s) inside th
 ```
 pip install gguf-connector
 ```
-Details please refer to 
+For details please refer to 
 https://pypi.org/project/gguf-connector/
 
 #### sample model(s) available to download (try out)
