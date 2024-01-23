@@ -5,6 +5,13 @@ with this version, you could pull any (pre-trained model) GGUF file(s) inside th
 [<img src="https://raw.githubusercontent.com/calcuis/chatgpt-model-selector/master/demo.gif" width="350" height="280">](https://github.com/calcuis/chatgpt-model-selector/blob/main/demo.gif)
 [<img src="https://raw.githubusercontent.com/calcuis/chatgpt-model-selector/master/demo1.gif" width="350" height="280">](https://github.com/calcuis/chatgpt-model-selector/blob/main/demo1.gif)
 
+#### import as a package
+```
+pip install gguf-connector
+```
+Details please refer to 
+https://pypi.org/project/gguf-connector/
+
 #### sample model(s) available to download (try out)
 For general purpose
 https://huggingface.co/calcuis/chat/blob/main/chat.gguf
