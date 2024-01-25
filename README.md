@@ -7,10 +7,10 @@ with this version, you could pull any (pre-trained model) GGUF file(s) inside th
 
 #### import as a package via pip/pip3
 ```
-pip install gguf-connector
+pip install gguf-selector
 ```
 For details please refer to 
-https://pypi.org/project/gguf-connector/
+https://pypi.org/project/gguf-selector/
 
 #### sample model(s) available to download (try out)
 For general purpose
